@@ -7,9 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-download.file("", "current.xlsx")
-download.file("", "old.xlsx")
 library(tidyverse)
 library(janitor)
 library(googlesheets4)
@@ -21,12 +18,33 @@ library(ggplot2)
 sheets_deauth()
 
 x <- read_sheet(ss = "https://docs.google.com/spreadsheets/d/14HmwN2cEVAJHupuehCuLdwG9BXtR3COrxDgaaylLhkA/edit#gid=0") %>%
-  clean_names()
-
-x %>%
-  arrange(desc(Red)) 
-
-x %>%
-  ggplot(aes(Red)) +
-  geom_bar()
+  clean_names() %>%
+  mutate(perc_red = red / (red + white))
 ```
+
+```{r}
+x
+
+glimpse(x)
+
+summary(x)
+```
+
+```{r}
+x %>%
+  arrange(desc(perc_red)) 
+
+x %>%
+  ggplot(aes(perc_red)) +
+  geom_histogram(bins=20) +
+  labs(title = "Percentage of Red Beads Drawn,",
+       subtitle = "Should we be suspicious of those outliers?",
+       caption = "Classroom data from 2020-03-03",
+       x = "Percentage of Red Beads Out of 25 Drawn",
+       y = "Count")
+```
+
+```{r}
+
+urn <- tibbble(bean_ID = 1:1000,
+               color = c(rep("Red", 2000), rep("White",   8000)))
