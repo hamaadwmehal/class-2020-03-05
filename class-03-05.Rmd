@@ -56,11 +56,14 @@ simulate_trial <- function(paddle_size) {
     rep_sample_n(size = paddle_size, reps = 51) %>% 
     group_by(replicate) %>% 
     summarize(red_sum = sum(color == "red")) %>% 
-    mutate(perc_red = red_sum / paddle_size) %>% 
-    ggplot(aes(perc_red)) + geom_histogram(bins = 20)
+    mutate(perc_red = red_sum / paddle_size)
 }
 
 
+
+
+tibble(percs = map_dbl(1:1000, ~simulate_trial(25)$perc_red %>% mean())) %>% 
+  ggplot(aes(percs)) + geom_histogram(bins = 20)
 
 ```
                
