@@ -45,6 +45,24 @@ x %>%
 ```
 
 ```{r}
+library(infer)
+urn <- tibble(
+  bean_ID = 1:10000,
+  color = c(rep("red", 2000), rep("white", 8000))
+)
 
-urn <- tibbble(bean_ID = 1:1000,
+simulate_trial <- function(paddle_size) {
+  urn %>% 
+    rep_sample_n(size = paddle_size, reps = 51) %>% 
+    group_by(replicate) %>% 
+    summarize(red_sum = sum(color == "red")) %>% 
+    mutate(perc_red = red_sum / paddle_size) %>% 
+    ggplot(aes(perc_red)) + geom_histogram(bins = 20)
+}
+
+
+
+```
+               
+               
                color = c(rep("Red", 2000), rep("White",   8000)))
